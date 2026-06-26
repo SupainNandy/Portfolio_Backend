@@ -1,26 +1,28 @@
-const jwt = require('jsonwebtoken')
+const jwt = require("jsonwebtoken");
 
-async function authAdmin (req,res,next){
-    try{
-        const token = req.cookies && req.cookies.adminToken;
+async function authAdmin(req, res, next) {
+    try {
+        const token = req.cookies.adminToken;
 
-        if(!token){
-            res.status(401).json({
-                message:"Unauthrize"
-        })
+        if (!token) {
+            return res.status(401).json({
+                message: "Unauthorized"
+            });
         }
 
-        const decode = jwt.verify(token,process.env.JWT_SKEY)
+        const decode = jwt.verify(token, process.env.JWT_SKEY);
 
-        req.admin = decode
+        req.admin = decode;
 
-        next()
+        next();
 
-    }catch(err){
-        console.log(err.message)
-        console.log("auth middlware error")
-        res.status(500).json({message:"Auth middleware error"})
+    } catch (err) {
+        console.log(err);
+
+        return res.status(401).json({
+            message: "Invalid or expired token"
+        });
     }
 }
 
-module.exports = authAdmin
+module.exports = authAdmin;
