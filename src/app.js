@@ -1,9 +1,8 @@
-    const express = require('express')
-    const cors = require('cors')
-    const cookieParser = require('cookie-parser')
+const express = require("express");
+const cors = require("cors");
+const cookieParser = require("cookie-parser");
 
-    const app = express()
-   const cors = require("cors");
+const app = express();
 
 app.use(cors({
   origin: [
@@ -12,36 +11,37 @@ app.use(cors({
   ],
   credentials: true
 }));
-    app.use(express.json())
-    app.use(express.urlencoded({extended:true}))
-    app.use(cookieParser())
 
-    app.get("/",(req,res)=>{
-        res.send("Hello from server")
-    })
-    //Adin Auth
-    const adminRoutes = require('../src/Routes/admin.routes')
-    app.use('/admin/auth',adminRoutes)
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
-    //Admin Profile\
-    const profileRoutes = require('../src/Routes/profile.routes')
-    app.use('/admin/profile',profileRoutes)
+app.get("/", (req, res) => {
+    res.send("Hello from server");
+});
 
-    //Education Admin
-    const educationRoutes = require("../src/Routes/education.routes")
-    app.use('/admin/education',educationRoutes)
+// Admin Auth
+const adminRoutes = require("./Routes/admin.routes");
+app.use("/admin/auth", adminRoutes);
 
-    //Skill Admin
-    const skillRoutes = require('../src/Routes/skill.routes')
-    app.use('/admin/skill',skillRoutes)
+// Admin Profile
+const profileRoutes = require("./Routes/profile.routes");
+app.use("/admin/profile", profileRoutes);
 
-    //Project Admin 
-    const projectRoutes = require('../src/Routes/project.routes')
+// Education
+const educationRoutes = require("./Routes/education.routes");
+app.use("/admin/education", educationRoutes);
 
-    app.use('/admin/project',projectRoutes)
+// Skills
+const skillRoutes = require("./Routes/skill.routes");
+app.use("/admin/skill", skillRoutes);
 
-    //Resume Admin
-    const resumeRoutes = require('../src/Routes/resume.routes')
-    app.use('/admin/resume',resumeRoutes)
+// Projects
+const projectRoutes = require("./Routes/project.routes");
+app.use("/admin/project", projectRoutes);
 
-    module.exports=app
+// Resume
+const resumeRoutes = require("./Routes/resume.routes");
+app.use("/admin/resume", resumeRoutes);
+
+module.exports = app;
