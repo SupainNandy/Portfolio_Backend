@@ -4,38 +4,42 @@ const authMiddleware = require("../middleware/auth.middleware");
 
 const projectRouter = express.Router();
 
+const projectCategories = new Set(["Frontend", "Backend", "Full Stack", "Mobile", "Other"]);
+
+function normalizeProjectPayload(body = {}) {
+  const category = typeof body.category === "string" ? body.category.trim() : body.category;
+  const techStack = Array.isArray(body.techStack)
+    ? body.techStack.map((tech) => String(tech).trim()).filter(Boolean)
+    : [];
+
+  return {
+    title: typeof body.title === "string" ? body.title.trim() : body.title,
+    description: typeof body.description === "string" ? body.description.trim() : body.description,
+    techStack,
+    githubLink: typeof body.githubLink === "string" ? body.githubLink.trim() : "",
+    liveLink: typeof body.liveLink === "string" ? body.liveLink.trim() : "",
+    category: projectCategories.has(category) ? category : "Full Stack",
+    featured: Boolean(body.featured),
+    displayOrder: Number.isFinite(Number(body.displayOrder)) ? Number(body.displayOrder) : 0,
+  };
+}
+
 // Create Project
 projectRouter.post("/", authMiddleware, async (req, res) => {
   try {
-    const {
-      title,
-      description,
-      techStack,
-      githubLink,
-      liveLink,
-      category,
-      featured,
-      displayOrder,
-    } = req.body;
-
-    const project = await Project.create({
-      title,
-      description,
-      techStack,
-      githubLink,
-      liveLink,
-      category,
-      featured,
-      displayOrder,
-    });
+    const project = await Project.create(normalizeProjectPayload(req.body));
 
     res.status(201).json({
       message: "Project created successfully",
       project,
     });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Internal Server Error" });
+    console.error("Create project error:", err);
+    const status = err.name === "ValidationError" ? 400 : 500;
+    res.status(status).json({
+      message: status === 400 ? "Invalid project data" : "Internal Server Error",
+      errors: status === 400 ? Object.values(err.errors).map((error) => error.message) : undefined,
+    });
   }
 });
 
@@ -74,7 +78,7 @@ projectRouter.put("/:id", authMiddleware, async (req, res) => {
   try {
     const project = await Project.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      normalizeProjectPayload(req.body),
       {
         new: true,
         runValidators: true,
@@ -90,8 +94,12 @@ projectRouter.put("/:id", authMiddleware, async (req, res) => {
       project,
     });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Internal Server Error" });
+    console.error("Update project error:", err);
+    const status = err.name === "ValidationError" ? 400 : 500;
+    res.status(status).json({
+      message: status === 400 ? "Invalid project data" : "Internal Server Error",
+      errors: status === 400 ? Object.values(err.errors).map((error) => error.message) : undefined,
+    });
   }
 });
 
