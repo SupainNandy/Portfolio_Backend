@@ -103,6 +103,31 @@ Potential improvements include API documentation, automated testing, stronger va
 
 GitHub: [@SupainNandy](https://github.com/SupainNandy)
 
+## Portfolio Administration
+
+The backend supports the server-side functionality used by the portfolio application, including administrative operations where implemented.
+
+The frontend admin interface is available at the following local development route:
+
+`http://localhost:5173/admin`
+
+**Related repositories:**
+- Frontend: [SupainPortfolio](https://github.com/SupainNandy/SupainPortfolio)
+- Backend: [Portfolio_Backend](https://github.com/SupainNandy/Portfolio_Backend)
+
+The admin interface may interact with backend endpoints for managing portfolio data, including profile information, education, skills, projects, and resume resources, depending on the current implementation.
+
+### Security
+
+- Require authentication for administrative operations.
+- Verify authorization on the server for every protected endpoint.
+- Never rely on an obscure URL as the only security measure.
+- Keep passwords, tokens, and private configuration out of source control.
+- Configure CORS for the intended frontend origins.
+
+The local admin URL is provided for development purposes. Production access depends on the deployment configuration and implemented security controls.
+
+
 ## License
 
 Add the appropriate license information if the project is intended for reuse or distribution.
